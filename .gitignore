@@ -13,3 +13,13 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# Ignore the built artifacts
+fan-gopher
+dist/
+
+# Ignore VS Code artifacts
+.vscode
+
+# Ignore local runtime artifacts
+fan-gopher.log
