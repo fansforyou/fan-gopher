@@ -3,6 +3,9 @@ build:
 
 release: release-linuxx64 release-macx64 release-winx64
 
+integration-test:
+	ginkgo run --label-filter="integration-test" -r ./..
+
 release-linuxx64:
 	env GOOS=linux GOARCH=amd64 go build -o dist/fan-gopher-linuxx64-$(version) main.go
 
