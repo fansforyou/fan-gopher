@@ -27,7 +27,7 @@ func (rd *RodGopher) GetPostDetails(postID int64, creatorName string) (*model.Po
 		return nil, fmt.Errorf("unable to get page for post ID %d under creator '%s': %w", postID, creatorName, err)
 	}
 
-	actorNameAnchor, err := page.ElementX("//a[contains(@class, 'b-username')]")
+	actorNameAnchor, err := page.ElementX("//div[contains(@class, 'g-user-name')]")
 	if err != nil {
 		return nil, fmt.Errorf("failed to resolve username anchor: %w", err)
 	}
@@ -43,9 +43,14 @@ func (rd *RodGopher) GetPostDetails(postID int64, creatorName string) (*model.Po
 		actorImageURL = *actorImageSrc
 	}
 
-	videoDescriptionDiv, err := xpath(page, "//div[contains(@class, 'g-truncated-text')]")
+	videoDescriptionDivs, err := page.ElementsX("//div[contains(@class, 'b-post__text')]")
 	if err != nil {
 		return nil, fmt.Errorf("failed to resolve the video description div: %w", err)
+	}
+
+	var videoDescription string
+	if len(videoDescriptionDivs) > 0 {
+		videoDescription = videoDescriptionDivs[0].MustText()
 	}
 
 	return &model.Post{
@@ -56,7 +61,7 @@ func (rd *RodGopher) GetPostDetails(postID int64, creatorName string) (*model.Po
 			},
 		},
 		VideoDetails: &model.VideoDetails{
-			VideoDescription: videoDescriptionDiv.MustText(),
+			VideoDescription: videoDescription,
 		},
 	}, nil
 }
