@@ -18,8 +18,9 @@
 fan-gopher
 dist/
 
-# Ignore VS Code artifacts
+# Ignore VS Code and OS artifacts
 .vscode
+.DS_Store
 
 # Ignore local runtime artifacts
 fan-gopher.log

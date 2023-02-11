@@ -9,6 +9,7 @@ import (
 	fangopherrod "github.com/fansforyou/fan-gopher/fans/rod"
 	"github.com/fansforyou/fan-gopher/model"
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -50,8 +51,10 @@ func main() {
 
 	flag.Parse()
 
+	// Disable Leakless usage because Windows flags it as a virus
+	rodLauncherURL := launcher.New().Leakless(false).MustLaunch()
 	// Quiet the logger so that the only output is the eventual JSON
-	browser := rod.New().Logger(utils.LoggerQuiet)
+	browser := rod.New().ControlURL(rodLauncherURL).Logger(utils.LoggerQuiet)
 	if connectErr := browser.Connect(); connectErr != nil {
 		logger.Errorf("Failed to start browser while resolving post %d for creator '%s': %v", postID, creatorName, connectErr)
 		printError(connectErr)
