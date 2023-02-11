@@ -6,6 +6,7 @@ import (
 	gopherrod "github.com/fansforyou/fan-gopher/fans/rod"
 	"github.com/fansforyou/fan-gopher/model"
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -15,7 +16,9 @@ var _ = Describe("Rod", Label("integration-test"), func() {
 	var gopher *gopherrod.RodGopher
 
 	BeforeEach(func() {
-		browser := rod.New().Logger(utils.LoggerQuiet)
+		// Disable Leakless usage because Windows flags it as a virus
+		rodLauncherURL := launcher.New().Leakless(false).MustLaunch()
+		browser := rod.New().ControlURL(rodLauncherURL).Logger(utils.LoggerQuiet)
 		connectErr := browser.Connect()
 		Expect(connectErr).To(BeNil(), "opening the browser should not have failed")
 		DeferCleanup(browser.MustClose)
